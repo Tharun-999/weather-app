@@ -18,23 +18,23 @@
     <div class="card">
         <div class="search">
             <input type="text" placeholder="Enter city name" spellcheck="false">
-            <button><img src="/Images/search.png" alt="Search"></button>
+            <button><img src="images/search.png" alt="Search"></button>
         </div>
         <div class="error-message"></div>
         <div class="weather">
-            <img src="Images/cloudy.png" class="weather-icon" alt="weather-icon">
+            <img src="images/cloudy.png" class="weather-icon" alt="weather-icon">
             <h1 class="temp">22°C</h1>
             <h2 class="city">Hyderabad</h2>
             <div class="details">
                 <div class="col">
-                    <img src="/Images/humidity.png">
+                    <img src="images/humidity.png" alt="Humidity">
                     <div>
                         <p class="Humidity">50%</p>
                         <p>Humidity</p>
                     </div>
                 </div>
                 <div class="col">
-                    <img src="Images/winnd.png">
+                    <img src="images/wind.png" alt="Wind">
                     <div>
                         <p class="Wind">25 km/h</p>
                         <p>Wind Speed</p>
@@ -43,6 +43,7 @@
             </div>
         </div>
     </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const apiKey = "31b0cd19c49adafbab818f8513ec1f35";
@@ -53,7 +54,6 @@
             const weatherIcon = document.querySelector(".weather-icon");
             const errorMessage = document.querySelector(".error-message");
 
-            // Weather condition mapping
             const weatherConditions = {
                 "Clear": "sunny.png",
                 "Clouds": "cloudy.png",
@@ -64,8 +64,6 @@
                 "Thunderstorm": "storm.png",
                 "Snow": "snow.png"
             };
-
-            
 
             function showError(message) {
                 errorMessage.textContent = message;
@@ -79,35 +77,33 @@
             }
 
             async function checkWeather(city) {
-                if(!city || city.trim() === "") {
+                if (!city || city.trim() === "") {
                     showError("Please enter a city name");
                     return;
                 }
-                
+
                 try {
                     const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
                     const data = await response.json();
-                    
-                    if(data.cod === "404" || data.cod === "400") {
+
+                    if (data.cod === "404" || data.cod === "400") {
                         showError("Invalid city entered. Please try again.");
                         return;
                     }
 
                     hideError();
-                    
-                    // Update weather data
+
                     document.querySelector(".city").innerHTML = data.name;
                     document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
                     document.querySelector(".Humidity").innerHTML = data.main.humidity + "%";
                     document.querySelector(".Wind").innerHTML = data.wind.speed + " km/h";
 
-                    // Update weather icon based on condition
                     const weatherMain = data.weather[0].main;
-                    const iconFile = weatherConditions[weatherMain] || "Cloudy.png";
+                    const iconFile = weatherConditions[weatherMain] || "cloudy.png";
                     weatherIcon.src = `images/${iconFile}`;
                     weatherIcon.alt = weatherMain;
-                    
-                } catch(error) {
+
+                } catch (error) {
                     console.error("Error fetching weather:", error);
                     showError("Error fetching weather data. Please try again.");
                 }
@@ -117,16 +113,14 @@
                 checkWeather(searchBox.value.trim());
             });
 
-            // Add event listener for Enter key
             searchBox.addEventListener("keypress", (e) => {
-                if(e.key === "Enter") {
+                if (e.key === "Enter") {
                     checkWeather(searchBox.value.trim());
                 }
             });
 
-            // Load default city on startup
             checkWeather("Hyderabad");
-        });    
+        });
     </script>
 </body>
 </html>
